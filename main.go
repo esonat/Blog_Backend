@@ -16,7 +16,7 @@ import (
 type Post struct {
   gorm.Model
   ID uint `json:"ID" gorm:"primaryKey"`
-  Title string `json:"Title"`
+  Title string `json:"Title" gorm:"size:100;not null"`
   Text string `json:"Text"`
   CategoryRefer uint `json:"Category"`
 }
@@ -26,6 +26,12 @@ type Category struct {
   ID uint `json:"ID" gorm:"primaryKey"`
   Name string `json:"Name"`
   Posts []Post `gorm:"foreignKey:CategoryRefer" json:"Posts"`
+}
+
+type User struct {
+  gorm.Model
+  ID uint `json:"ID" gorm:"primaryKey"`
+  Username string `json:"Username"`
 }
 
 func (category Category) toString() string {
@@ -60,12 +66,18 @@ func createPost(w http.ResponseWriter,r *http.Request) {
     fmt.Fprintf(w,"Kindly enter post data")
   }
 
+  fmt.Println("reqbody: ",reqBody)
+
   json.Unmarshal(reqBody,&newPost)
-  w.WriteHeader(http.StatusCreated)
+  fmt.Println("Title:"+newPost.Title+"Text:"+newPost.Text+"Category:"+string(newPost.CategoryRefer))
+
   db.Create(&Post{Title:newPost.Title,Text:newPost.Text,CategoryRefer:newPost.CategoryRefer})
 
 
   fmt.Println("Post with Title:"+newPost.Title+" added to database")
+
+
+  w.WriteHeader(http.StatusCreated)
   json.NewEncoder(w).Encode(newPost)
 }
 
@@ -292,16 +304,16 @@ func deletePost(w http.ResponseWriter,r *http.Request) {
 }
 
 func main() {
-  dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-  db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-
-  if err!=nil{
-    panic("failed to connect database")
-  }
-
-  db.AutoMigrate(&Post{})
-  db.AutoMigrate(&Category{})
-
+  // dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+  // db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+  //
+  // if err!=nil{
+  //   panic("failed to connect database")
+  // }
+  //
+  // db.AutoMigrate(&Post{})
+  // db.AutoMigrate(&Category{})
+  //
 
   router := mux.NewRouter().StrictSlash(true)
   router.HandleFunc("/categories/{id}",getOneCategory).Methods("GET")
