@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -20,6 +21,8 @@ type Post struct {
 	Text          string `json:"Text"`
 	CategoryRefer uint   `json:"Category"`
 	UserRefer     uint   `json:"User"`
+	LikeCount     uint   `json:"LikeCount"`
+	ImagePath     string `json:"ImagePath"`
 }
 
 type Category struct {
@@ -58,13 +61,16 @@ func (user User) toString() string {
 //   }
 // }\
 
-func createUser(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+var dsn string = "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+var db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+func createUser(w http.ResponseWriter, r *http.Request) {
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	var newUser User
 	reqBody, err := ioutil.ReadAll(r.Body)
@@ -86,12 +92,12 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func getAllUsers(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	var users []User
 	db.Find(&users)
@@ -107,12 +113,12 @@ func getAllUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func getOneUser(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	userID := mux.Vars(r)["id"]
 
@@ -132,12 +138,12 @@ func getOneUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUserByUsername(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	fmt.Println("getUserByUsername")
 
@@ -164,12 +170,12 @@ func getUserByUsername(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	userID := mux.Vars(r)["id"]
 	var updatedUser User
@@ -197,12 +203,12 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	userID := mux.Vars(r)["id"]
 	var user User
@@ -219,12 +225,12 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func createPost(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	var newPost Post
 	reqBody, err := ioutil.ReadAll(r.Body)
@@ -237,7 +243,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(reqBody, &newPost)
 	fmt.Println("Title:" + newPost.Title + "Text:" + newPost.Text + "Category:" + string(newPost.CategoryRefer))
 
-	db.Create(&Post{Title: newPost.Title, Text: newPost.Text, CategoryRefer: newPost.CategoryRefer, UserRefer: newPost.UserRefer})
+	db.Create(&Post{Title: newPost.Title, Text: newPost.Text, CategoryRefer: newPost.CategoryRefer, UserRefer: newPost.UserRefer, LikeCount: 0, ImagePath: newPost.ImagePath})
 
 	fmt.Println("Post with Title:" + newPost.Title + " added to database")
 
@@ -246,12 +252,12 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func createCategory(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	var newCategory Category
 	reqBody, err := ioutil.ReadAll(r.Body)
@@ -269,12 +275,12 @@ func createCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func getOnePost(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	postID := mux.Vars(r)["id"]
 
@@ -294,12 +300,12 @@ func getOnePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func getOneCategory(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	categoryID := mux.Vars(r)["id"]
 
@@ -317,12 +323,12 @@ func getOneCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func getAllPosts(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	var posts []Post
 	db.Find(&posts)
@@ -337,13 +343,25 @@ func getAllPosts(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(posts)
 }
 
-func getAllCategories(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+func getPostsByRange(w http.ResponseWriter, r *http.Request) {
+	limit := mux.Vars(r)["limit"]
+	limit_int, _ := strconv.Atoi(limit)
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	var posts []Post
+
+	db.Limit(limit_int).Find(&posts)
+
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+	json.NewEncoder(w).Encode(posts)
+}
+
+func getAllCategories(w http.ResponseWriter, r *http.Request) {
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	var categories []Category
 	db.Find(&categories)
@@ -358,12 +376,12 @@ func getAllCategories(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateCategory(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	categoryID := mux.Vars(r)["id"]
 	var updatedCategory Category
@@ -390,12 +408,12 @@ func updateCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func updatePost(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	postID := mux.Vars(r)["id"]
 	var updatedPost Post
@@ -415,20 +433,24 @@ func updatePost(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(post.toString())
 
-	db.Model(&post).Updates(Post{Title: updatedPost.Title, Text: updatedPost.Text, CategoryRefer: updatedPost.CategoryRefer})
+	db.Model(&post).Updates(Post{Title: updatedPost.Title, Text: updatedPost.Text, CategoryRefer: updatedPost.CategoryRefer, UserRefer: updatedPost.UserRefer, LikeCount: updatedPost.LikeCount, ImagePath: updatedPost.ImagePath})
 
 	fmt.Println("Post with ID:" + postID + " updated")
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "*")
+
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(post)
 }
 
 func deleteCategory(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	categoryID := mux.Vars(r)["id"]
 	var category Category
@@ -445,12 +467,12 @@ func deleteCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func deletePost(w http.ResponseWriter, r *http.Request) {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		panic("failed to connect database")
-	}
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
 
 	postID := mux.Vars(r)["id"]
 	var post Post
@@ -466,9 +488,49 @@ func deletePost(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Post with ID:" + postID + " was deleted")
 }
 
+func getPostsByCategoryId(w http.ResponseWriter, r *http.Request) {
+	categoryId := mux.Vars(r)["categoryId"]
+
+	print("Category id:" + categoryId)
+
+	var posts []Post
+
+	if err := db.Where("category_refer = ?", categoryId).First(&posts).Error; err != nil {
+		print(err)
+		fmt.Println("Category with id:" + categoryId + " not found")
+		json.NewEncoder(w).Encode(nil)
+	}
+
+	// if err := db.Where("category_refer = ?", category.ID).Find(&posts).Error; err != nil {
+	// 	print(err)
+	// 	fmt.Println("Post with categoryID:" + string(category.ID) + " not found")
+	// 	return
+	// }
+
+	for _, v := range posts {
+		fmt.Println(v.toString())
+	}
+
+	//w.Header().Add("Access-Control-Allow-Origin","*");
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+
+	json.NewEncoder(w).Encode(posts)
+	// var post Post
+
+	// if err := db.Where("ID = ?", postID).First(&post).Error; err != nil {
+	// 	fmt.Println("Category with ID:" + postID + " not found")
+	// 	return
+	// }
+
+	// fmt.Println(post.toString())
+
+	// //  w.Header().Add("Access-Control-Allow-Origin","*");
+	// w.Header().Add("Content-Type", "application/json; charset=utf-8")
+
+	// json.NewEncoder(w).Encode(post)
+}
+
 func main() {
-	dsn := "sonat:Es@184720158971@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		panic("failed to connect database")
@@ -484,9 +546,9 @@ func main() {
 	// 	&Post{},
 	// )
 
-	db.Migrator().CreateTable(&User{})
-	db.Migrator().CreateTable(&Category{})
-	db.Migrator().CreateTable(&Post{})
+	// db.Migrator().CreateTable(&User{})
+	// db.Migrator().CreateTable(&Category{})
+	// db.Migrator().CreateTable(&Post{})
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/categories/{id}", getOneCategory).Methods("GET")
@@ -497,8 +559,10 @@ func main() {
 	router.HandleFunc("/posts/{id}", getOnePost).Methods("GET")
 	router.HandleFunc("/posts/{id}", updatePost).Methods("PATCH")
 	router.HandleFunc("/posts/{id}", deletePost).Methods("DELETE")
+	router.HandleFunc("/posts/categoryId/{categoryId}", getPostsByCategoryId).Methods("GET")
 	router.HandleFunc("/posts", createPost).Methods("POST")
 	router.HandleFunc("/posts", getAllPosts).Methods("GET")
+	router.HandleFunc("/posts/limit/{limit}", getPostsByRange).Methods("GET")
 	router.HandleFunc("/users", getAllUsers).Methods("GET")
 	router.HandleFunc("/users", createUser).Methods("POST")
 	router.HandleFunc("/users/{id}", getOneUser).Methods("GET")
@@ -507,7 +571,16 @@ func main() {
 	router.HandleFunc("/users/username/{username}", getUserByUsername).Methods("GET")
 	router.HandleFunc("/users/{id}", updateUser).Methods("PATCH")
 	router.HandleFunc("/users/{id}", deleteUser).Methods("DELETE")
-	log.Fatal(http.ListenAndServe(":8080", handlers.CORS()(router)))
+	headersOk := handlers.AllowedHeaders([]string{"*"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "PATCH", "OPTIONS"})
+	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(originsOk, headersOk, methodsOk)(router)))
+
+	// start server listen
+	// with error handling
+
+	//log.Fatal(http.ListenAndServe(":8080", handlers.CORS()(router)))
+
 	//
 	// db.Create(&Category{ID:"1",Name:"Technology",Posts:nil})
 	// var category Category
